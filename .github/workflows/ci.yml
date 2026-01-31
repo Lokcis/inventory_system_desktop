@@ -1,0 +1,77 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, desarrollo ]
+  pull_request:
+    branches: [ main, desarrollo ]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        dotnet-version: [ '8.0.x' ]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ matrix.dotnet-version }}
+      - name: Diagnostic: inspect solution file (Linux/macOS)
+        if: runner.os != 'Windows'
+        run: |
+          echo "Listing repo root:"
+          ls -la
+          echo "Head of InventarioApp.sln:"
+          head -n 20 InventarioApp.sln || true
+          echo "Size (bytes):"
+          wc -c InventarioApp.sln || true
+          echo "First bytes (hex):"
+          od -An -N16 -tx1 InventarioApp.sln | tr -s ' ' | sed 's/^ //' || echo "hexdump unavailable"
+      - name: Diagnostic: inspect solution file (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          Write-Host "Listing repo root:"
+          dir -Force
+          Write-Host "Head of InventarioApp.sln:"
+          Get-Content InventarioApp.sln -TotalCount 20
+          Write-Host "Size (bytes):"
+          (Get-Item InventarioApp.sln).length
+          Write-Host "First bytes (hex):"
+          $b = [System.IO.File]::ReadAllBytes('InventarioApp.sln'); ($b[0..15] | ForEach-Object { $_.ToString('X2') }) -join ' '
+      - name: Restore
+        run: dotnet restore
+      - name: Install dotnet-format
+        run: dotnet tool install -g dotnet-format
+      - name: Check code format
+        run: dotnet format --verify-no-changes
+      - name: Build
+        run: dotnet build --no-restore --configuration Release
+      - name: Run tests (Linux)
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          TEST_DLL=tests/InventarioApp.Tests/bin/Release/net8.0/InventarioApp.Tests.dll
+          if [ ! -f "$TEST_DLL" ]; then echo "Release test dll not found, listing bin/Release:"; ls -R tests/InventarioApp.Tests/bin/Release || exit 1; fi
+          pushd $(dirname "$TEST_DLL")
+          dotnet vstest $(basename "$TEST_DLL")
+          popd
+      - name: Run tests (Windows)
+        if: matrix.os == 'windows-latest'
+        shell: pwsh
+        run: |
+          $dll = 'tests\\InventarioApp.Tests\\bin\\Release\\net8.0\\InventarioApp.Tests.dll'
+          if (-not (Test-Path $dll)) { Write-Error 'Test dll not found; listing tests\\InventarioApp.Tests\\bin'; dir tests\\InventarioApp.Tests\\bin -Recurse; exit 1 }
+          Push-Location (Split-Path $dll)
+          dotnet vstest (Split-Path $dll -Leaf)
+          Pop-Location
+      - name: Run tests (macOS)
+        if: matrix.os == 'macos-latest'
+        run: |
+          TEST_DLL=tests/InventarioApp.Tests/bin/Release/net8.0/InventarioApp.Tests.dll
+          if [ ! -f "$TEST_DLL" ]; then echo "Release test dll not found, listing bin/Release:"; ls -R tests/InventarioApp.Tests/bin/Release || exit 1; fi
+          pushd $(dirname "$TEST_DLL")
+          dotnet vstest $(basename "$TEST_DLL")
+          popd
