@@ -27,9 +27,23 @@ jobs:
         run: dotnet format --verify-no-changes
       - name: Build
         run: dotnet build --no-restore --configuration Release
-      - name: Test
-        if: matrix.os != 'macos-latest'
-        run: dotnet test tests/InventarioApp.Tests/InventarioApp.Tests.csproj --no-build --verbosity normal --nologo
+      - name: Run tests (Linux)
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          TEST_DLL=tests/InventarioApp.Tests/bin/Release/net8.0/InventarioApp.Tests.dll
+          if [ ! -f "$TEST_DLL" ]; then echo "Release test dll not found, listing bin/Release:"; ls -R tests/InventarioApp.Tests/bin/Release || exit 1; fi
+          pushd $(dirname "$TEST_DLL")
+          dotnet vstest $(basename "$TEST_DLL")
+          popd
+      - name: Run tests (Windows)
+        if: matrix.os == 'windows-latest'
+        shell: pwsh
+        run: |
+          $dll = 'tests\\InventarioApp.Tests\\bin\\Release\\net8.0\\InventarioApp.Tests.dll'
+          if (-not (Test-Path $dll)) { Write-Error 'Test dll not found; listing tests\\InventarioApp.Tests\\bin'; dir tests\\InventarioApp.Tests\\bin -Recurse; exit 1 }
+          Push-Location (Split-Path $dll)
+          dotnet vstest (Split-Path $dll -Leaf)
+          Pop-Location
       - name: Test (macOS skipped due to vstest issue)
         if: matrix.os == 'macos-latest'
         run: echo "Skipping tests on macOS runner due to known vstest path parsing issue. See https://github.com/microsoft/vstest/issues for details."
