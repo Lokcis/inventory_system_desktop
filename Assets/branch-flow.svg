@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="160" viewBox="0 0 800 160" preserveAspectRatio="xMidYMid meet">
+  <style>
+    .box { fill:#ffffff; stroke:#2b6cb0; stroke-width:2; rx:8; }
+    .label { font: 14px 'Segoe UI', Arial, sans-serif; fill:#1a202c; }
+    .sub { font: 12px 'Segoe UI', Arial, sans-serif; fill:#4a5568; }
+    .arrow { stroke:#2d3748; stroke-width:2; fill:none; marker-end:url(#arrowhead); }
+  </style>
+
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#2d3748" />
+    </marker>
+  </defs>
+
+  <!-- Boxes -->
+  <rect x="40" y="40" width="220" height="60" class="box" />
+  <text x="150" y="62" text-anchor="middle" class="label">feature/&lt;nombre&gt;</text>
+  <text x="150" y="82" text-anchor="middle" class="sub">trabajo local</text>
+
+  <rect x="290" y="40" width="220" height="60" class="box" />
+  <text x="400" y="62" text-anchor="middle" class="label">desarrollo</text>
+  <text x="400" y="82" text-anchor="middle" class="sub">PR → CI pasa → merge</text>
+
+  <rect x="540" y="40" width="220" height="60" class="box" />
+  <text x="650" y="62" text-anchor="middle" class="label">main</text>
+  <text x="650" y="82" text-anchor="middle" class="sub">PR → CI + review → release</text>
+
+  <!-- Arrows -->
+  <path d="M260 70 L290 70" class="arrow" />
+  <path d="M510 70 L540 70" class="arrow" />
+
+  <!-- Footer note -->
+  <text x="400" y="130" text-anchor="middle" class="sub">Flujo recomendado: feature → desarrollo → main</text>
+</svg>
