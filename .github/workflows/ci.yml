@@ -14,11 +14,16 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-latest]
         dotnet-version: [ '8.0.x' ]
     steps:
+      # 1. Checkout del código fuente
       - uses: actions/checkout@v4
+
+      # 2. Instalación del SDK de .NET en la versión definida en la matriz
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ matrix.dotnet-version }}
+
+      # 3. Diagnóstico opcional en Linux/macOS
       - name: Diagnostic: inspect solution file (Linux/macOS)
         if: runner.os != 'Windows'
         run: |
@@ -30,6 +35,8 @@ jobs:
           wc -c InventarioApp.sln || true
           echo "First bytes (hex):"
           od -An -N16 -tx1 InventarioApp.sln | tr -s ' ' | sed 's/^ //' || echo "hexdump unavailable"
+
+      # 4. Diagnóstico opcional en Windows
       - name: Diagnostic: inspect solution file (Windows)
         if: runner.os == 'Windows'
         shell: pwsh
@@ -42,14 +49,23 @@ jobs:
           (Get-Item InventarioApp.sln).length
           Write-Host "First bytes (hex):"
           $b = [System.IO.File]::ReadAllBytes('InventarioApp.sln'); ($b[0..15] | ForEach-Object { $_.ToString('X2') }) -join ' '
+
+      # 5. Restaurar dependencias
       - name: Restore
         run: dotnet restore
+
+      # 6. Instalar dotnet-format (herramienta de formateo de código)
       - name: Install dotnet-format
         run: dotnet tool install -g dotnet-format
+
+      # 7. Verificar formato del código
       - name: Check code format
         run: dotnet format --verify-no-changes
+
+      # 8. Compilar en modo Release
       - name: Build
         run: dotnet build --no-restore --configuration Release
+
+      # 9. Ejecutar pruebas unitarias
       - name: Run tests
         run: dotnet test tests/InventarioApp.Tests/InventarioApp.Tests.csproj --configuration Release --verbosity normal --nologo
-
