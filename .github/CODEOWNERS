@@ -1,0 +1,9 @@
+# CODEOWNERS: asigna a los mantenedores por carpeta
+# Sintaxis: <pattern> <owner>
+
+# Responsable general
+* @Lokcis
+
+# Core y pruebas
+/src/InventarioApp.Core/ @Lokcis
+/tests/ @Lokcis
