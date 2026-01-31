@@ -1,0 +1,31 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, desarrollo ]
+  pull_request:
+    branches: [ main, desarrollo ]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        dotnet-version: [ '8.0.x' ]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ matrix.dotnet-version }}
+      - name: Restore
+        run: dotnet restore
+      - name: Install dotnet-format
+        run: dotnet tool install -g dotnet-format
+      - name: Check code format
+        run: dotnet format --verify-no-changes
+      - name: Build
+        run: dotnet build --no-restore --configuration Release
+      - name: Test
+        run: dotnet test --no-build --verbosity normal
