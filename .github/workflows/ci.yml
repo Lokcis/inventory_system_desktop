@@ -25,7 +25,7 @@ jobs:
 
       # 3. Diagnóstico opcional en Linux/macOS
       - name: Diagnostic: inspect solution file (Linux/macOS)
-        if: runner.os != 'Windows'
+        if: ${{ matrix.os != 'windows-latest' }}
         run: |
           echo "Listing repo root:"
           ls -la
@@ -38,7 +38,7 @@ jobs:
 
       # 4. Diagnóstico opcional en Windows
       - name: Diagnostic: inspect solution file (Windows)
-        if: runner.os == 'Windows'
+        if: ${{ matrix.os == 'windows-latest' }}
         shell: pwsh
         run: |
           Write-Host "Listing repo root:"
