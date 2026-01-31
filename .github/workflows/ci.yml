@@ -44,6 +44,11 @@ jobs:
           Push-Location (Split-Path $dll)
           dotnet vstest (Split-Path $dll -Leaf)
           Pop-Location
-      - name: Test (macOS skipped due to vstest issue)
+      - name: Run tests (macOS)
         if: matrix.os == 'macos-latest'
-        run: echo "Skipping tests on macOS runner due to known vstest path parsing issue. See https://github.com/microsoft/vstest/issues for details."
+        run: |
+          TEST_DLL=tests/InventarioApp.Tests/bin/Release/net8.0/InventarioApp.Tests.dll
+          if [ ! -f "$TEST_DLL" ]; then echo "Release test dll not found, listing bin/Release:"; ls -R tests/InventarioApp.Tests/bin/Release || exit 1; fi
+          pushd $(dirname "$TEST_DLL")
+          dotnet vstest $(basename "$TEST_DLL")
+          popd
