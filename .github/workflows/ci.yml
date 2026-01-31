@@ -51,5 +51,5 @@ jobs:
       - name: Build
         run: dotnet build --no-restore --configuration Release
       - name: Run tests
-  run: dotnet test tests/InventarioApp.Tests/InventarioApp.Tests.csproj --configuration Release --verbosity normal --nologo
+        run: dotnet test tests/InventarioApp.Tests/InventarioApp.Tests.csproj --configuration Release --verbosity normal --nologo
 
