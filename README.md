@@ -94,6 +94,15 @@ dotnet run --project src/ProjectName
 
 Lee la guía completa de contribución en [`CONTRIBUTING.md`](CONTRIBUTING.md) para detalles sobre flujo de trabajo, convenciones y PRs.
 
+Pequeño resumen del flujo:
+
+```
+feature/<nombre>  -- PR -->  desarrollo  -- PR -->  main
+    (dev work)         (CI passes)       (CI + review)
+```
+
+![Diagrama flujo de ramas](Assets/branch-flow.svg)
+
 - Crea una rama con el prefijo `feature/` o `fix/`.
 - Abre un issue antes de cambios grandes (usa las plantillas disponibles: bug/feature).
 - Envía Pull Requests bien descritos y con cambios pequeños y coherentes.
@@ -131,7 +140,24 @@ Ajusta el `-r` (runtime identifier) según plataforma: `win-x64`, `linux-x64`, `
 
 ---
 
-## 📜 Licencia
+## � Documentación
+
+Encuentra la documentación completa en la carpeta `docs/`:
+
+- `docs/DEVELOPER_GUIDE.md` — guía de desarrollo y flujo de trabajo.
+- `docs/ARCHITECTURE.md` — arquitectura y contratos de los componentes.
+- `docs/TESTING_GUIDE.md` — guía para pruebas unitarias y convenciones.
+- `docs/RELEASE_GUIDE.md` — pasos para preparar y publicar releases.
+
+Diagramas del flujo de ramas (ambos formatos disponibles):
+
+![Diagrama SVG](Assets/branch-flow.svg)
+
+![Diagrama PNG](Assets/branch-flow.png)
+
+---
+
+## �📜 Licencia
 
 Este proyecto está bajo la licencia **MIT** — consulta el archivo `LICENSE` para más detalles.
 

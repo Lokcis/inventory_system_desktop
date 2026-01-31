@@ -18,13 +18,52 @@ Gracias por querer contribuir a InventarioApp. Esta guía documenta TODO lo nece
 
 ## 3) Flujo de trabajo (ramas y commits) 🌲
 - Ramas:
-  - `main` — rama protegida, siempre en estado desplegable.
-  - `desarrollo` — rama de integración para features en progreso.
+  - `main` — rama protegida, siempre en estado desplegable (solo cambios vía PR y con checks obligatorios).
+  - `desarrollo` — rama de integración para features en progreso (reglas más laxas: PRs con checks pero sin aprobaciones obligatorias).
   - `feature/<nombre>` — nuevas funcionalidades (ej.: `feature/vistas-inventario`).
   - `fix/<nombre>` — correcciones de bugs.
 - Commits:
   - Usa formato: `tipo(scope): descripción corta` (ej.: `feat(ui): agregar pantalla de productos`).
   - Tipos recomendados: `feat`, `fix`, `chore`, `docs`, `style`, `refactor`, `test`.
+
+### Protección de ramas y flujo recomendado 🔐
+- Reglas aplicadas en este repo (resumen):
+  - `main`: requiere Pull Request, que pasen los checks (`CI`) y al menos 1 aprobación de review; aplica también a administradores.
+  - `desarrollo`: requiere Pull Request y que pasen los checks (`CI`); no requiere aprobaciones por defecto (flexible para estudiantes).
+- Flujo recomendado para proponer cambios:
+  1. Crea una rama desde `desarrollo`: `feature/<tu-nombre>` o `fix/<tu-nombre>`.
+  2. Haz commits claros y atómicos siguiendo la convención `tipo(scope): descripción`.
+  3. Ejecuta localmente `dotnet format`, `dotnet build` y `dotnet test` antes de push.
+  4. Haz push y abre un PR hacia `desarrollo` (usa la plantilla de PR).
+  5. Espera a que CI pase; si todo está verde y no hay problemas, mergea a `desarrollo`.
+  6. Cuando `desarrollo` esté estable y listo para release, abre PR desde `desarrollo` hacia `main` para revisión final y merge.
+- Buenas prácticas:
+  - Mantén los PRs pequeños y enfocados para facilitar la revisión.
+  - Incluye capturas o pasos para probar la UI cuando apliquen.
+  - Si detectas un bug crítico, abre un `fix/<nombre>` y etiqueta la PR como urgente.
+
+### Diagrama del flujo de ramas 🗺️
+
+```
+Feature development:
+
+  feature/<nombre>  -- PR -->  desarrollo
+                             (CI pasa)
+                                 |
+                                 v
+                             merged -> desarrollo
+
+Release flow (promote to main):
+
+  desarrollo  -- PR -->  main
+                       (CI pasa + 1 review)
+                              |
+                              v
+                           merged -> main
+```
+
+Este diagrama resume el flujo recomendado para proponer cambios y cómo se promueven a `main` para release.
+
 
 ---
 

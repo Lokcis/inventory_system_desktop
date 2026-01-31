@@ -4,16 +4,23 @@ using Xunit;
 
 namespace InventarioApp.Tests
 {
+    /// <summary>
+    /// Pruebas unitarias para <see cref="InventarioApp.Core.ViewModels.ProductViewModel"/>.
+    /// Cada prueba documenta el comportamiento esperado para operaciones comunes y casos borde.
+    /// </summary>
     public class ProductViewModelTests
     {
         [Fact]
         public void Add_IncreasesQuantity()
         {
+            // Arrange
             var product = new Product { Name = "Test", Quantity = 5 };
             var vm = new ProductViewModel(product);
 
+            // Act
             vm.Add(3);
 
+            // Assert
             Assert.Equal(8, vm.Quantity);
         }
 
